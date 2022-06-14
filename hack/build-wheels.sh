@@ -37,10 +37,12 @@ _main() {
   echo "---> Building MLServer wheel"
   _buildWheel $ROOT_FOLDER $_outputPath
 
-  for _runtime in "$ROOT_FOLDER/runtimes/"*; do
-    echo "---> Building MLServer runtime: '$_runtime'"
-    _buildWheel $_runtime $_outputPath
-  done
+  echo "---> Building MLServer runtime: 'lightgbm'"
+  _buildWheel "$ROOT_FOLDER/runtimes/lightgbm" $_outputPath
+  # for _runtime in "$ROOT_FOLDER/runtimes/"*; do
+  #   echo "---> Building MLServer runtime: '$_runtime'"
+  #   _buildWheel $_runtime $_outputPath
+  # done
 }
 
 _main $1

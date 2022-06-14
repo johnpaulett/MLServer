@@ -5,7 +5,8 @@ set -o errexit
 set -o pipefail
 
 ROOT_FOLDER="$(dirname "${0}")/.."
-IMAGE_NAME="seldonio/mlserver"
+# IMAGE_NAME="seldonio/mlserver"
+IMAGE_NAME="equium/mlserver"
 
 if [ "$#" -ne 1 ]; then
   echo 'Invalid number of arguments'
@@ -17,7 +18,7 @@ _buildImage() {
   local _runtimes=$1
   local _tag=$2
 
-  DOCKER_BUILDKIT=1 docker build $ROOT_FOLDER \
+  DOCKER_BUILDKIT=1 docker build --platform=linux/amd64 $ROOT_FOLDER \
     --build-arg RUNTIMES="$_runtimes" \
     -t "$IMAGE_NAME:$_tag"
 }
@@ -35,12 +36,13 @@ _main() {
   local _version=$1
 
   echo "---> Building core MLServer images"
-  _buildImage "all" $_version
-  _buildImage "" $_version-slim
+  # _buildImage "all" $_version
+  # _buildImage "" $_version-slim
 
-  for _runtimePath in "$ROOT_FOLDER/runtimes/"*; do
-    _buildRuntimeImage $_runtimePath $_version
-  done
+  _buildRuntimeImage "$ROOT_FOLDER/runtimes/lightgbm" $_version
+  # for _runtimePath in "$ROOT_FOLDER/runtimes/"*; do
+  #   _buildRuntimeImage $_runtimePath $_version
+  # done
 }
 
 _main $1

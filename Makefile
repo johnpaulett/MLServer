@@ -1,6 +1,8 @@
 SHELL := /bin/bash
-VERSION := $(shell sed 's/^__version__ = "\(.*\)"/\1/' ./mlserver/version.py)
-IMAGE_NAME := seldonio/mlserver
+# VERSION := $(shell sed 's/^__version__ = "\(.*\)"/\1/' ./mlserver/version.py)
+# IMAGE_NAME := seldonio/mlserver
+VERSION := $(shell sed 's/^__version__ = "\(.*\)"/\1/' ./mlserver/version.py)-eq1
+IMAGE_NAME := equium/mlserver
 
 .PHONY: install-dev _generate generate run build \
 	push-test push test lint fmt version clean licenses
@@ -26,7 +28,8 @@ run:
 	mlserver start \
 		./tests/testdata
 
-build: clean 
+build: clean
+	@echo ${IMAGE_NAME}
 	./hack/build-images.sh ${VERSION}
 	./hack/build-wheels.sh ./dist
 
@@ -43,15 +46,15 @@ push-test:
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 push:
-	twine upload dist/*
-	docker push ${IMAGE_NAME}:${VERSION}
-	docker push ${IMAGE_NAME}:${VERSION}-slim
-	for _runtime in ./runtimes/*; \
-	do \
-	  _runtimeName=$$(basename $$_runtime); \
-		docker push ${IMAGE_NAME}:${VERSION}-$$_runtimeName; \
-	done
-
+	# twine upload dist/*
+	# docker push ${IMAGE_NAME}:${VERSION}
+	# docker push ${IMAGE_NAME}:${VERSION}-slim
+	# for _runtime in ./runtimes/*; \
+	# do \
+	#   _runtimeName=$$(basename $$_runtime); \
+	# 	docker push ${IMAGE_NAME}:${VERSION}-$$_runtimeName; \
+	# done
+	docker push ${IMAGE_NAME}:${VERSION}-lightgbm
 test:
 	tox
 
